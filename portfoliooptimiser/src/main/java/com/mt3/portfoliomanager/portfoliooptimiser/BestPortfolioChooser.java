@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 public final class BestPortfolioChooser {
 
+    // TODO: print progress and outputs as they are found
+
     public TObjectDoubleMap<Fund> createPortfolio(List<Fund> funds, int maxFundsInPortfolio) {
         CorrelationMatrix correlationMatrix = new CorrelationMatrix(funds);
         AtomicReference<PortfolioStats> maxStats = new AtomicReference<>();
