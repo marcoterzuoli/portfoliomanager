@@ -1,5 +1,6 @@
 package com.mt3.portfoliomanager.portfoliooptimiser;
 
+import com.mt3.portfoliomanager.portfoliooptimiser.fund.Fund;
 import gnu.trove.impl.unmodifiable.TUnmodifiableObjectIntMap;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;

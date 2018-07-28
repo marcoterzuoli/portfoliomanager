@@ -1,5 +1,6 @@
 package com.mt3.portfoliomanager.portfoliooptimiser;
 
+import com.mt3.portfoliomanager.portfoliooptimiser.fund.Fund;
 import gnu.trove.map.TObjectDoubleMap;
 
 import java.util.*;

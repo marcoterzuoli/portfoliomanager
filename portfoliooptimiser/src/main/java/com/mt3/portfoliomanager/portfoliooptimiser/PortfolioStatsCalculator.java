@@ -1,6 +1,7 @@
 package com.mt3.portfoliomanager.portfoliooptimiser;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.mt3.portfoliomanager.portfoliooptimiser.fund.Fund;
 import gnu.trove.map.TObjectDoubleMap;
 
 public final class PortfolioStatsCalculator {
