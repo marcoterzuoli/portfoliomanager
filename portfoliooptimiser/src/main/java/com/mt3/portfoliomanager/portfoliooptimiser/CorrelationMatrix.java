@@ -6,6 +6,7 @@ import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
+import java.util.Arrays;
 import java.util.List;
 
 public final class CorrelationMatrix {
@@ -36,7 +37,14 @@ public final class CorrelationMatrix {
                 } else {
                     Fund fundI = funds.get(i);
                     Fund fundJ = funds.get(j);
-                    correlation = new PearsonsCorrelation().correlation(fundI.getPrices().toArray(), fundJ.getPrices().toArray());
+
+                    double[] pricesI = fundI.getPrices().toArray();
+                    double[] pricesJ = fundJ.getPrices().toArray();
+                    int minLength = Math.min(pricesI.length, pricesJ.length);
+                    pricesI = Arrays.copyOfRange(pricesI, pricesI.length - minLength, pricesI.length);
+                    pricesJ = Arrays.copyOfRange(pricesJ, pricesJ.length - minLength, pricesJ.length);
+
+                    correlation = new PearsonsCorrelation().correlation(pricesI, pricesJ);
                     if (Double.isNaN(correlation)) {
                         correlation = 0.0;
                     }

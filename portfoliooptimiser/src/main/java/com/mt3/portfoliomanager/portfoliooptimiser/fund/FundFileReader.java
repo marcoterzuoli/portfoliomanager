@@ -2,6 +2,7 @@ package com.mt3.portfoliomanager.portfoliooptimiser.fund;
 
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.linked.TDoubleLinkedList;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,10 +14,13 @@ import java.util.List;
 
 public final class FundFileReader {
 
+    private static final Logger LOG = Logger.getLogger(FundFileReader.class);
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     public static Fund readFromCsv(Path file) {
         try {
+            LOG.info(file.toFile().getAbsolutePath());
             String name = file.toFile().getName();
             List<String> lines = Files.readAllLines(file);
 
