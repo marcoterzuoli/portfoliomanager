@@ -30,6 +30,7 @@ public final class MainCorrelator {
 
         LOG.info("Loading fund files");
         List<Fund> allFunds = Arrays.stream(Objects.requireNonNull(Constants.MARKET_DATA_FOLDER.toFile().listFiles()))
+                .filter(x -> x.isFile())
                 .map(x -> FundFileReader.readFromCsv(x.toPath()))
                 .collect(Collectors.toList());
 
@@ -80,19 +81,20 @@ public final class MainCorrelator {
 
         LOG.info("Calculating possible additions from outside of portfolio");
         for (Fund fund2 : notInPortfolio) {
-            if (fund2.getMax() > 1.25) {
+            if (fund2.getMax() > 1.25 && fund2.getMean() > 1.1) {
                 double highestCorrelation = currentPortfolio.stream()
                         .mapToDouble(x -> correlationMatrix.getCorrelation(x, fund2))
                         .max()
                         .getAsDouble();
                 if (highestCorrelation < 0.3) {
                     LOG.info("Add " + fund2.getName() + ": max correlation is " + highestCorrelation + " and average return is " + fund2.getMean()
+                            + " and product return is " + fund2.getProductReturn()
                             + " and max return is " + fund2.getMax());
                 }
             }
         }
 
-        // TODO: save csv with fund1, fund2, correlation and csv with fund1, returns in each of last 36 months, other stats like mean/product total and per year
+        // TODO: save csv with fund1, fund2, correlation and csv with fund1, returns in each of last 3 years, other stats like mean/product total and per year
         LOG.info("Saving all correlations");
         try (PrintWriter writer = new PrintWriter(args[1])) {
             writer.println("Fund1,Fund2,InPtf1,InPtf2,Correlation");
@@ -103,5 +105,9 @@ public final class MainCorrelator {
                 }
             }
         }
+
+        // TODO: add fidelity parser to find all available funds
+        // TODO: print portfolio.txt automatically
+        // TODO: print best 3 replacement, not just best 1
     }
 }

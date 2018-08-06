@@ -11,6 +11,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class FundFileReader {
 
@@ -35,6 +36,17 @@ public final class FundFileReader {
             }
 
             return new Fund(name, prices);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
+        }
+    }
+
+    public static List<Fund> readPortfolioFromFile(Path file, List<Fund> funds) {
+        try {
+            List<String> fundNames = Files.readAllLines(file);
+            return funds.stream()
+                    .filter(x -> fundNames.contains(x.getName()))
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
         }

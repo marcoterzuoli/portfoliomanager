@@ -6,6 +6,8 @@ import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
+import java.util.Objects;
+
 public final class Fund {
     private final String name;
     private final TDoubleList prices;
@@ -41,6 +43,10 @@ public final class Fund {
         return statistics.getMean();
     }
 
+    public double getMax() {
+        return statistics.getMax();
+    }
+
     public double getVariance() {
         return statistics.getVariance();
     }
@@ -50,12 +56,19 @@ public final class Fund {
     }
 
     public double getTotalReturn() {
-        return prices.get(prices.size() - 1);
+        return prices.get(prices.size() - 1) / prices.get(0);
     }
 
     public double getAnnualisedReturn() {
         double exponent = 1.0 / ((double)prices.size() / Constants.BUSINESS_DAYS_IN_YEAR);
         return Math.pow(getTotalReturn(), exponent);
+    }
+
+    public double getProductReturn() {
+        double result = 1.0;
+        for (double price : prices.toArray())
+            result *= price;
+        return result;
     }
 
     public Fund view(int fromIndexAgo, int toIndexAgo) {
@@ -69,5 +82,18 @@ public final class Fund {
         Fund beforeFund = new Fund(getName(), prices.subList(0, index));
         Fund afterFund = new Fund(getName(), prices.subList(index, prices.size()));
         return new Fund[] {beforeFund, afterFund};
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fund fund = (Fund) o;
+        return Objects.equals(getName(), fund.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }

@@ -1,4 +1,4 @@
-package com.mt3.portfoliomanager.portfoliooptimiser.clustering;
+package com.mt3.portfoliomanager.portfoliooptimiser.clustering.kmeans;
 
 import com.mt3.portfoliomanager.portfoliooptimiser.fund.Fund;
 import org.apache.commons.math3.ml.clustering.Clusterable;
