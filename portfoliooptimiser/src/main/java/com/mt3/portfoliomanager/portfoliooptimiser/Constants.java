@@ -7,6 +7,6 @@ public final class Constants {
 
     public static Path MARKET_DATA_FOLDER = Paths.get("C:\\Users\\admin\\Dropbox\\Documents\\fidelity\\ms_md");
 
-    public static double BUSINESS_DAYS_IN_YEAR = 261.0;
-    public static int BUSINESS_DAYS_IN_MONTH = (int)Math.round(BUSINESS_DAYS_IN_YEAR / 12.0);
+    public static double BUSINESS_DAYS_IN_YEAR = 365.0;
+    public static double BUSINESS_DAYS_IN_MONTH = BUSINESS_DAYS_IN_YEAR / 12.0;
 }

@@ -8,6 +8,7 @@ import com.mt3.portfoliomanager.portfoliooptimiser.movingaverage.MovingAverageCa
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
@@ -20,17 +21,21 @@ public final class MainCorrelator {
 
     private static final Logger LOG = Logger.getLogger(MainClusterer.class);
 
-    private static final int MONTHS_TO_INCLUDE = 36;
-    private static final int DAYS_TO_INCLUDE = MONTHS_TO_INCLUDE * Constants.BUSINESS_DAYS_IN_MONTH;
+    private static final double MONTHS_TO_INCLUDE = 36.0;
+    private static final int DAYS_TO_INCLUDE = (int)(MONTHS_TO_INCLUDE * Constants.BUSINESS_DAYS_IN_MONTH);
+
+    private static double annualise(double returnOver3Years) {
+        return Math.pow(returnOver3Years, 1.0 / 3.0);
+    }
 
     public static void main(String[] args) throws FileNotFoundException {
         BasicConfigurator.configure();
 
-        MovingAverageCalculator movingAverageCalculator = new MovingAverageCalculator(Fund::getAnnualisedReturn);
+        MovingAverageCalculator movingAverageCalculator = new MovingAverageCalculator(Fund::getTotalReturn);
 
         LOG.info("Loading fund files");
         List<Fund> allFunds = Arrays.stream(Objects.requireNonNull(Constants.MARKET_DATA_FOLDER.toFile().listFiles()))
-                .filter(x -> x.isFile())
+                .filter(File::isFile)
                 .map(x -> FundFileReader.readFromCsv(x.toPath()))
                 .collect(Collectors.toList());
 
@@ -55,15 +60,17 @@ public final class MainCorrelator {
             Fund bestReplacement = fund1;
             for (Fund fund2 : notInPortfolio) {
                 double correlation = correlationMatrix.getCorrelation(fund1, fund2);
-                if (correlation > 0.9 && bestReplacement.getMean() < fund2.getMean()) {
+                if (correlation > 0.9 && bestReplacement.getProductReturn() < fund2.getProductReturn()) {
                     bestReplacement = fund2;
                 }
             }
             if (bestReplacement != fund1) {
                 double correlation = correlationMatrix.getCorrelation(fund1, bestReplacement);
                 LOG.info("Replace " + fund1.getName() + " and " + bestReplacement.getName() + ": correlation is " + correlation +
-                        " and return improvement is from " + fund1.getMean() + " to " + bestReplacement.getMean() + ", with improvement of "
-                        + (bestReplacement.getMean() - fund1.getMean()));
+                        " and yearly return improvement is from " + annualise(fund1.getProductReturn())
+                        + " to " + annualise(bestReplacement.getProductReturn()) +
+                        ", with improvement of " +
+                        (annualise(bestReplacement.getProductReturn()) - annualise(fund1.getProductReturn())));
             }
         }
 
@@ -81,15 +88,15 @@ public final class MainCorrelator {
 
         LOG.info("Calculating possible additions from outside of portfolio");
         for (Fund fund2 : notInPortfolio) {
-            if (fund2.getMax() > 1.25 && fund2.getMean() > 1.1) {
+            if (fund2.getMax() > 1.05 && annualise(fund2.getProductReturn()) > 1.05) {
                 double highestCorrelation = currentPortfolio.stream()
                         .mapToDouble(x -> correlationMatrix.getCorrelation(x, fund2))
                         .max()
-                        .getAsDouble();
-                if (highestCorrelation < 0.3) {
-                    LOG.info("Add " + fund2.getName() + ": max correlation is " + highestCorrelation + " and average return is " + fund2.getMean()
-                            + " and product return is " + fund2.getProductReturn()
-                            + " and max return is " + fund2.getMax());
+                        .orElse(1.0);
+                if (highestCorrelation < 0.5) {
+                    LOG.info("Add " + fund2.getName() + ": max correlation is " + highestCorrelation
+                            + " and yearly return is " + annualise(fund2.getProductReturn())
+                            + " and max monthly return is " + fund2.getMax());
                 }
             }
         }

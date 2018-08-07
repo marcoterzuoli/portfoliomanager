@@ -71,4 +71,17 @@ public class MovingAverageCalculatorTest {
         double[] returns = calculator.calculate(fund, 6);
         Assert.assertEquals(0, returns.length);
     }
+
+    @Test
+    public void testFractionalFrequency() {
+        TDoubleList prices = new TDoubleArrayList(new double[] {
+                1.0, 2.0, 3.0, 4.0, 5.0
+        });
+        Fund fund = new Fund("name", prices);
+        MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
+        double[] returns = calculator.calculate(fund, 2.5);
+        Assert.assertEquals(2, returns.length);
+        Assert.assertEquals(3.0, returns[0], EPSILON);
+        Assert.assertEquals(5.0 / 4.0, returns[1], EPSILON);
+    }
 }

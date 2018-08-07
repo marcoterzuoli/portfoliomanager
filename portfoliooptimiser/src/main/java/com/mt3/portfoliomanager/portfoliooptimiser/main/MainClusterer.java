@@ -23,7 +23,7 @@ public final class MainClusterer {
     private static final Logger LOG = Logger.getLogger(MainClusterer.class);
 
     private static final int MONTHS_TO_INCLUDE = 36;
-    private static final int DAYS_TO_INCLUDE = MONTHS_TO_INCLUDE * Constants.BUSINESS_DAYS_IN_MONTH;
+    private static final int DAYS_TO_INCLUDE = MONTHS_TO_INCLUDE * (int)Constants.BUSINESS_DAYS_IN_MONTH;
 
     public static void main(String[] args) {
         BasicConfigurator.configure();
