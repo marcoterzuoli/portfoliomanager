@@ -1,5 +1,6 @@
 package com.mt3.portfoliomanager.portfoliooptimiser.fund;
 
+import com.mt3.portfoliomanager.portfoliooptimiser.downloader.MarketDataDownloader;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.linked.TDoubleLinkedList;
 import org.apache.log4j.Logger;
@@ -39,6 +40,18 @@ public final class FundFileReader {
             return funds.stream()
                     .filter(x -> fundNames.contains(x.getName()))
                     .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
+        }
+    }
+
+    public static List<Fund> readPortfolioFromFile(Path file, MarketDataDownloader downloader) {
+        try {
+            List<String> fundNames = Files.readAllLines(file);
+            List<String> isins = fundNames.stream()
+                    .map(x -> x.split(" - ")[0])
+                    .collect(Collectors.toList());
+            return downloader.download(isins);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
         }

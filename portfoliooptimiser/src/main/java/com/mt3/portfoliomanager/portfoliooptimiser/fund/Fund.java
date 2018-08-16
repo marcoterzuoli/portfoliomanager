@@ -1,15 +1,20 @@
 package com.mt3.portfoliomanager.portfoliooptimiser.fund;
 
+import com.google.common.collect.ImmutableList;
 import com.mt3.portfoliomanager.portfoliooptimiser.Constants;
 import gnu.trove.impl.unmodifiable.TUnmodifiableDoubleList;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class Fund {
     private final String name;
+    private final List<LocalDate> dates;
     private final TDoubleList prices;
     private final SummaryStatistics statistics = new SummaryStatistics(); // functionally immutable
 
@@ -18,16 +23,33 @@ public final class Fund {
     }
 
     public Fund(String name, TDoubleList prices, boolean normalise) {
+        this(name, ImmutableList.of(), prices, normalise);
+    }
+
+    public Fund(String name, List<LocalDate> dates, TDoubleList prices, boolean normalise) {
+        if (!dates.isEmpty() && dates.size() != prices.size())
+            throw new IllegalArgumentException("Dates and prices must be of the same length, or dates be empty");
+
         this.name = name;
 
         double price0 = prices.get(0);
+        List<LocalDate> datesTemp = new ArrayList<>();
         TDoubleList pricesTemp = new TDoubleArrayList();
-        for (double price : prices.toArray()) {
+
+        double[] pricesArray = prices.toArray();
+        LocalDate[] datesArray = dates.toArray(new LocalDate[0]);
+        for (int i = 0; i < pricesArray.length; i++) {
+            double price = pricesArray[i];
             if (normalise)
                 price = price / price0;
             statistics.addValue(price);
             pricesTemp.add(price);
+
+            if (!dates.isEmpty()) {
+                datesTemp.add(datesArray[i]);
+            }
         }
+        this.dates = ImmutableList.copyOf(datesTemp);
         this.prices = new TUnmodifiableDoubleList(pricesTemp);
     }
 
@@ -69,6 +91,28 @@ public final class Fund {
         for (double price : prices.toArray())
             result *= price;
         return result;
+    }
+
+    public Fund view(LocalDate fromDate, LocalDate toDate) {
+        int fromIndex = -1;
+        int toIndex = -1;
+        for (int i = 0; i < dates.size(); i++) {
+            LocalDate date = dates.get(i);
+            if (fromDate.equals(date)) {
+                fromIndex = i;
+            }
+            if (toDate.equals(date)) {
+                toIndex = i;
+            }
+            if (fromIndex >= 0 && toIndex >= 0)
+                break;
+        }
+        if (fromIndex < 0)
+            throw new IllegalArgumentException("From date " + fromDate + " cannot be found");
+        if (toIndex < 0)
+            throw new IllegalArgumentException("To date " + toDate + " cannot be found");
+        int n = prices.size();
+        return view(n - fromIndex, n - toIndex + 1); // +1 because toDate is included, but toIndex is not
     }
 
     public Fund view(int fromIndexAgo, int toIndexAgo) {
