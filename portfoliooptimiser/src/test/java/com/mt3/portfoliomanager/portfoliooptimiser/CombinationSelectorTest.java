@@ -1,6 +1,7 @@
 package com.mt3.portfoliomanager.portfoliooptimiser;
 
 import com.google.common.collect.ImmutableList;
+import com.mt3.portfoliomanager.CombinationsSelector;
 import org.junit.Assert;
 import org.junit.Test;
 
