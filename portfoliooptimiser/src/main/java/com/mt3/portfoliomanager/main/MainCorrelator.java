@@ -31,8 +31,6 @@ public final class MainCorrelator {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        BasicConfigurator.configure();
-
         MovingAverageCalculator movingAverageCalculator = new MovingAverageCalculator(Fund::getTotalReturn);
 
         LOG.info("Loading fund files");

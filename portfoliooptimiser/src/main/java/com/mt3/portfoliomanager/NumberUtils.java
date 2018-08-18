@@ -8,4 +8,9 @@ public final class NumberUtils {
         s = s.substring(0, s.length() - 1);
         return Double.parseDouble(s) / 100.0;
     }
+
+    public static String getAsPercenage(double number) {
+        double pc = 100.0 * (number - 1.0);
+        return String.format("%.2f", pc) + "%";
+    }
 }

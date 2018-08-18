@@ -6,7 +6,6 @@ import com.mt3.portfoliomanager.CorrelationMatrix;
 import com.mt3.portfoliomanager.fund.Fund;
 import com.mt3.portfoliomanager.fund.FundFileReader;
 import com.mt3.portfoliomanager.movingaverage.MovingAverageCalculator;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -17,8 +16,6 @@ public final class MainMonthlyMovingAverage {
     private static final Logger LOG = Logger.getLogger(MainMonthlyMovingAverage.class);
 
     public static void main(String[] args) {
-        BasicConfigurator.configure();
-
         MovingAverageCalculator movingAverageCalculator = new MovingAverageCalculator(Fund::getAnnualisedReturn);
 
         LOG.info("Loading fund files");

@@ -26,8 +26,6 @@ public final class MainClusterer {
     private static final int DAYS_TO_INCLUDE = MONTHS_TO_INCLUDE * (int)Constants.BUSINESS_DAYS_IN_MONTH;
 
     public static void main(String[] args) {
-        BasicConfigurator.configure();
-
         MovingAverageCalculator movingAverageCalculator = new MovingAverageCalculator(Fund::getAnnualisedReturn);
 
         LOG.info("Loading fund files");

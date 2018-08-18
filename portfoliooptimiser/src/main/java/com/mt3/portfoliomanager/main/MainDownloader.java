@@ -1,11 +1,11 @@
 package com.mt3.portfoliomanager.main;
 
+import com.mt3.portfoliomanager.NumberUtils;
 import com.mt3.portfoliomanager.downloader.MarketDataDownloader;
 import com.mt3.portfoliomanager.downloader.MorningstarDownloader;
 import com.mt3.portfoliomanager.fund.Fund;
 import com.mt3.portfoliomanager.fund.FundFileReader;
 import com.mt3.portfoliomanager.fund.PortfolioChain;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;
@@ -18,8 +18,6 @@ public final class MainDownloader {
     private static final Logger LOG = Logger.getLogger(MainClusterer.class);
 
     public static void main(String[] args) throws FileNotFoundException {
-        BasicConfigurator.configure();
-
         LocalDate startDate = LocalDate.of(2018, 8, 11);
         LocalDate endDate = LocalDate.now().minusDays(1);
 
@@ -32,9 +30,8 @@ public final class MainDownloader {
                 .mapToDouble(Fund::getTotalReturn)
                 .average().getAsDouble();
 
-        System.out.println(100.0 * (portfolioChain.getTotalReturn(endDate) - 1.0));
-        System.out.println(100.0 * (benchmarkTotalReturn - 1.0));
-        // TODO: automatically get dates to download and calculate results for
+        System.out.println(NumberUtils.getAsPercenage(portfolioChain.getTotalReturn(endDate)));
+        System.out.println(NumberUtils.getAsPercenage(benchmarkTotalReturn));
         // TODO: calculate current allocation (i.e. considering how each fund has returned)
     }
 }
