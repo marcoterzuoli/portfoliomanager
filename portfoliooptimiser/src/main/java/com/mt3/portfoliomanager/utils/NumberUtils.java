@@ -1,4 +1,4 @@
-package com.mt3.portfoliomanager;
+package com.mt3.portfoliomanager.utils;
 
 public final class NumberUtils {
 

@@ -1,7 +1,7 @@
 package com.mt3.portfoliomanager.fund;
 
-import com.mt3.portfoliomanager.NumberUtils;
-import com.mt3.portfoliomanager.downloader.MarketDataDownloader;
+import com.mt3.portfoliomanager.utils.NumberUtils;
+import com.mt3.portfoliomanager.downloader.MorningstarDownloader;
 import com.opencsv.CSVReader;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.linked.TDoubleLinkedList;
@@ -55,7 +55,7 @@ public final class FundFileReader {
         }
     }
 
-    public static List<Fund> readPortfolioFromFile(Path file, MarketDataDownloader downloader) {
+    public static List<Fund> readPortfolioFromFile(Path file, MorningstarDownloader downloader) {
         try {
             List<String> fundNames = Files.readAllLines(file);
             List<String> isins = fundNames.stream()
@@ -67,7 +67,7 @@ public final class FundFileReader {
         }
     }
 
-    public static PortfolioChain readPortfolioAllocationFromFile(Path file, MarketDataDownloader downloader) {
+    public static PortfolioChain readPortfolioAllocationFromFile(Path file, MorningstarDownloader downloader) {
         List<Portfolio> result = new ArrayList<>();
 
         TObjectDoubleMap<Fund> portfolio = new TObjectDoubleHashMap<>();

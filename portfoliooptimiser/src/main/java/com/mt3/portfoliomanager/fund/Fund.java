@@ -8,9 +8,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class Fund {
     private final String name;
@@ -67,6 +65,19 @@ public final class Fund {
 
     public TDoubleList getPrices() {
         return prices;
+    }
+
+    public List<LocalDate> getDates() {
+        return dates;
+    }
+
+    public Map<LocalDate, Double> getPricesAndDates() {
+        Map<LocalDate, Double> result = new LinkedHashMap<>();
+        double[] prices = getPrices().toArray();
+        LocalDate[] dates = getDates().toArray(new LocalDate[0]);
+        for (int i = 0; i < prices.length; i++)
+            result.put(dates[i], prices[i]);
+        return result;
     }
 
     public double getMean() {

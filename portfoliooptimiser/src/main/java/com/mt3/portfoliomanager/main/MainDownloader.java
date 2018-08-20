@@ -1,7 +1,6 @@
 package com.mt3.portfoliomanager.main;
 
-import com.mt3.portfoliomanager.NumberUtils;
-import com.mt3.portfoliomanager.downloader.MarketDataDownloader;
+import com.mt3.portfoliomanager.utils.NumberUtils;
 import com.mt3.portfoliomanager.downloader.MorningstarDownloader;
 import com.mt3.portfoliomanager.fund.Fund;
 import com.mt3.portfoliomanager.fund.FundFileReader;
@@ -21,7 +20,7 @@ public final class MainDownloader {
         LocalDate startDate = LocalDate.of(2018, 8, 11);
         LocalDate endDate = LocalDate.now().minusDays(1);
 
-        MarketDataDownloader downloader = new MorningstarDownloader();
+        MorningstarDownloader downloader = new MorningstarDownloader();
         PortfolioChain portfolioChain = FundFileReader.readPortfolioAllocationFromFile(Paths.get(args[0]), downloader);
 
         List<Fund> benchmarkFunds = FundFileReader.readPortfolioFromFile(Paths.get(args[1]), downloader);
