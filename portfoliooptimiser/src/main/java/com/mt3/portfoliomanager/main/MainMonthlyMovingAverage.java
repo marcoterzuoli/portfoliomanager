@@ -62,7 +62,7 @@ public final class MainMonthlyMovingAverage {
 
         // TODO: only use funds with returns above certain threshold to exclude cash etc
 
-        String portfolioDescription = Joiner.on('\n').join(portfolio.stream().map(Fund::getName).collect(Collectors.toList()));
+        String portfolioDescription = Joiner.on('\n').join(portfolio.stream().map(Fund::getDefinition).collect(Collectors.toList()));
         LOG.info("Portfolio:\n" + portfolioDescription);
     }
 }

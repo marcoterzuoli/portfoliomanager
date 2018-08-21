@@ -5,7 +5,6 @@ import com.mt3.portfoliomanager.CorrelationMatrix;
 import com.mt3.portfoliomanager.fund.Fund;
 import com.mt3.portfoliomanager.fund.FundFileReader;
 import com.mt3.portfoliomanager.movingaverage.MovingAverageCalculator;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -81,7 +80,7 @@ public final class MainCorrelator {
                 double improvement = annualise(bestReplacement.getProductReturn()) - annualise(fund1.getProductReturn());
                 if (improvement > 0.02) {
                     double correlation = correlationMatrix.getCorrelation(fund1, bestReplacement);
-                    LOG.info("Replace " + fund1.getName() + " and " + bestReplacement.getName() + ": correlation is " + correlation +
+                    LOG.info("Replace " + fund1.getDefinition().getIsinAndName() + " and " + bestReplacement.getDefinition().getIsinAndName() + ": correlation is " + correlation +
                             " and yearly return improvement is from " + annualise(fund1.getProductReturn())
                             + " to " + annualise(bestReplacement.getProductReturn()) +
                             ", with improvement of " + improvement);
@@ -95,7 +94,7 @@ public final class MainCorrelator {
                 if (fund1 != fund2) {
                     double correlation = correlationMatrix.getCorrelation(fund1, fund2);
                     if (correlation > 0.85) {
-                        LOG.info("Merge " + fund1.getName() + " and " + fund2.getName() + ": correlation is " + correlation);
+                        LOG.info("Merge " + fund1.getDefinition().getIsinAndName() + " and " + fund2.getDefinition().getIsinAndName() + ": correlation is " + correlation);
                     }
                 }
             }
@@ -104,7 +103,7 @@ public final class MainCorrelator {
         LOG.info("Calculating possible additions from outside of portfolio");
         for (Fund fund2 : notInPortfolio) {
             Fund fund5Years = fundYearlyReturns5Years.stream()
-                    .filter(x -> x.getName().equals(fund2.getName()))
+                    .filter(x -> x.getDefinition().getIsinAndName().equals(fund2.getDefinition().getIsinAndName()))
                     .findFirst()
                     .orElse(null);
             if (fund2.getMax() > 1.1 && annualise(fund2.getProductReturn()) > 1.1) {
@@ -114,7 +113,7 @@ public final class MainCorrelator {
                             .max()
                             .orElse(1.0);
                     if (highestCorrelation < 0.6) {
-                        LOG.info("Add " + fund2.getName() + ": max correlation is " + highestCorrelation
+                        LOG.info("Add " + fund2.getDefinition().getIsinAndName() + ": max correlation is " + highestCorrelation
                                 + " and yearly return is " + annualise(fund2.getProductReturn())
                                 + " and max monthly return is " + fund2.getMax());
                     }
@@ -128,7 +127,7 @@ public final class MainCorrelator {
             writer.println("Fund1,Fund2,InPtf1,InPtf2,Correlation");
             for (Fund fund1 : allFunds) {
                 for (Fund fund2 : allFunds) {
-                    writer.println(fund1.getName() + "," + fund2.getName() + "," + currentPortfolio.contains(fund1) +
+                    writer.println(fund1.getDefinition().getIsinAndName() + "," + fund2.getDefinition().getIsinAndName() + "," + currentPortfolio.contains(fund1) +
                             "," + currentPortfolio.contains(fund2) + "," + correlationMatrix.getCorrelation(fund1, fund2));
                 }
             }
@@ -139,7 +138,7 @@ public final class MainCorrelator {
             writer.println("Fund,InPtf,T-5,T-4,T-3,T-2,T-1");
             for (Fund fund : allFunds) {
                 Fund fund5Years = fundYearlyReturns5Years.stream()
-                        .filter(x -> x.getName().equals(fund.getName()))
+                        .filter(x -> x.getDefinition().getIsinAndName().equals(fund.getDefinition().getIsinAndName()))
                         .findFirst()
                         .orElse(null);
                 double[] returns = new double[5];
@@ -147,7 +146,7 @@ public final class MainCorrelator {
                     returns = fund5Years.getPrices().toArray();
                 } else {
                     Fund fund3Years = fundYearlyReturns3Years.stream()
-                            .filter(x -> x.getName().equals(fund.getName()))
+                            .filter(x -> x.getDefinition().getIsinAndName().equals(fund.getDefinition().getIsinAndName()))
                             .findFirst()
                             .orElse(null);
                     if (fund3Years != null) {
@@ -155,7 +154,7 @@ public final class MainCorrelator {
                             returns[i + 2] = fund3Years.getPrices().toArray()[i];
                     }
                 }
-                writer.println(fund.getName() + "," + currentPortfolio.contains(fund) +
+                writer.println(fund.getDefinition().getIsinAndName() + "," + currentPortfolio.contains(fund) +
                         "," + returns[0] + "," + returns[1] + "," + returns[2]
                         + "," + returns[3] + "," + returns[4]);
             }

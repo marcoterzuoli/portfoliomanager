@@ -9,7 +9,6 @@ import com.mt3.portfoliomanager.fund.Fund;
 import com.mt3.portfoliomanager.fund.FundFileReader;
 import com.mt3.portfoliomanager.movingaverage.MovingAverageCalculator;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
@@ -59,7 +58,7 @@ public final class MainClusterer {
             totalCorrelation += clusterCorrelation;
             String clusterDescription = Joiner.on('\n').join(cluster.getPoints().stream()
                     .sorted(Comparator.comparingDouble(x -> -x.getFund().getMean()))
-                    .map(x -> x.getFund().getName() + " - " + x.getFund().getMean())
+                    .map(x -> x.getFund().getDefinition().getIsinAndName() + " - " + x.getFund().getMean())
                     .collect(Collectors.toList()));
             LOG.info("--- Cluster " + cluster.getPoints().size() + " " + clusterCorrelation + " " + minCorrelation + " --- \n" + clusterDescription + "\n");
 

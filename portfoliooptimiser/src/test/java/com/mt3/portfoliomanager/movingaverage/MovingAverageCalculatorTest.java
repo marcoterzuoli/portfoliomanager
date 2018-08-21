@@ -1,6 +1,7 @@
 package com.mt3.portfoliomanager.movingaverage;
 
 import com.mt3.portfoliomanager.fund.Fund;
+import com.mt3.portfoliomanager.fund.FundDefinition;
 import gnu.trove.list.TDoubleList;
 import gnu.trove.list.array.TDoubleArrayList;
 import org.junit.Assert;
@@ -15,7 +16,7 @@ public class MovingAverageCalculatorTest {
         TDoubleList prices = new TDoubleArrayList(new double[] {
                 1.0, 2.0, 3.0, 4.0, 5.0, 6.0
         });
-        Fund fund = new Fund("name", prices);
+        Fund fund = new Fund(new FundDefinition("id", "name", "isin"), prices);
         MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
         double[] returns = calculator.calculate(fund, 3);
         Assert.assertEquals(2, returns.length);
@@ -28,7 +29,7 @@ public class MovingAverageCalculatorTest {
         TDoubleList prices = new TDoubleArrayList(new double[] {
                 1.0, 2.0, 3.0, 4.0, 5.0
         });
-        Fund fund = new Fund("name", prices);
+        Fund fund = new Fund(new FundDefinition("id", "name", "isin"), prices);
         MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
         double[] returns = calculator.calculate(fund, 2);
         Assert.assertEquals(2, returns.length);
@@ -41,7 +42,7 @@ public class MovingAverageCalculatorTest {
         TDoubleList prices = new TDoubleArrayList(new double[] {
                 1.0, 2.0, 3.0, 4.0, 5.0
         });
-        Fund fund = new Fund("name", prices);
+        Fund fund = new Fund(new FundDefinition("id", "name", "isin"), prices);
         MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
         double[] returns = calculator.calculate(fund, 1);
         Assert.assertEquals(5, returns.length);
@@ -54,7 +55,7 @@ public class MovingAverageCalculatorTest {
         TDoubleList prices = new TDoubleArrayList(new double[] {
                 1.0, 2.0, 3.0, 4.0, 5.0
         });
-        Fund fund = new Fund("name", prices);
+        Fund fund = new Fund(new FundDefinition("id", "name", "isin"), prices);
         MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
         double[] returns = calculator.calculate(fund, 5);
         Assert.assertEquals(1, returns.length);
@@ -66,7 +67,7 @@ public class MovingAverageCalculatorTest {
         TDoubleList prices = new TDoubleArrayList(new double[] {
                 1.0, 2.0, 3.0, 4.0, 5.0
         });
-        Fund fund = new Fund("name", prices);
+        Fund fund = new Fund(new FundDefinition("id", "name", "isin"), prices);
         MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
         double[] returns = calculator.calculate(fund, 6);
         Assert.assertEquals(0, returns.length);
@@ -77,7 +78,7 @@ public class MovingAverageCalculatorTest {
         TDoubleList prices = new TDoubleArrayList(new double[] {
                 1.0, 2.0, 3.0, 4.0, 5.0
         });
-        Fund fund = new Fund("name", prices);
+        Fund fund = new Fund(new FundDefinition("id", "name", "isin"), prices);
         MovingAverageCalculator calculator = new MovingAverageCalculator(Fund::getTotalReturn);
         double[] returns = calculator.calculate(fund, 2.5);
         Assert.assertEquals(2, returns.length);

@@ -11,24 +11,24 @@ import java.time.LocalDate;
 import java.util.*;
 
 public final class Fund {
-    private final String name;
+    private final FundDefinition definition;
     private final List<LocalDate> dates;
     private final TDoubleList prices;
     private final SummaryStatistics statistics = new SummaryStatistics(); // functionally immutable
 
-    public Fund(String name, TDoubleList prices) {
-        this(name, prices, true);
+    public Fund(FundDefinition definition, TDoubleList prices) {
+        this(definition, prices, true);
     }
 
-    public Fund(String name, TDoubleList prices, boolean normalise) {
-        this(name, ImmutableList.of(), prices, normalise);
+    public Fund(FundDefinition definition, TDoubleList prices, boolean normalise) {
+        this(definition, ImmutableList.of(), prices, normalise);
     }
 
-    public Fund(String name, List<LocalDate> dates, TDoubleList prices, boolean normalise) {
+    public Fund(FundDefinition definition, List<LocalDate> dates, TDoubleList prices, boolean normalise) {
         if (!dates.isEmpty() && dates.size() != prices.size())
             throw new IllegalArgumentException("Dates and prices must be of the same length, or dates be empty");
 
-        this.name = name;
+        this.definition = definition;
 
         double price0 = prices.get(0);
         List<LocalDate> datesTemp = new ArrayList<>();
@@ -51,16 +51,8 @@ public final class Fund {
         this.prices = new TUnmodifiableDoubleList(pricesTemp);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getIsin() {
-        return getIsin(name);
-    }
-
-    public static String getIsin(String name) {
-        return name.split(" - ")[0];
+    public FundDefinition getDefinition() {
+        return definition;
     }
 
     public TDoubleList getPrices() {
@@ -138,12 +130,12 @@ public final class Fund {
         int n = prices.size();
         int fromIndex = n - fromIndexAgo;
         int toIndex = n - toIndexAgo;
-        return new Fund(getName(), prices.subList(fromIndex, toIndex));
+        return new Fund(getDefinition(), prices.subList(fromIndex, toIndex));
     }
 
     public Fund[] split(int index) {
-        Fund beforeFund = new Fund(getName(), prices.subList(0, index));
-        Fund afterFund = new Fund(getName(), prices.subList(index, prices.size()));
+        Fund beforeFund = new Fund(getDefinition(), prices.subList(0, index));
+        Fund afterFund = new Fund(getDefinition(), prices.subList(index, prices.size()));
         return new Fund[] {beforeFund, afterFund};
     }
 
@@ -152,11 +144,11 @@ public final class Fund {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fund fund = (Fund) o;
-        return Objects.equals(getName(), fund.getName());
+        return Objects.equals(getDefinition(), fund.getDefinition());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(getDefinition());
     }
 }

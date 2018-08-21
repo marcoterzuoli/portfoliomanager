@@ -38,7 +38,7 @@ public final class FundFileReader {
                 prices.add(price);
             }
 
-            return new Fund(name, prices);
+            return new Fund(new FundDefinition(null, name, null), prices);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
         }
@@ -48,7 +48,7 @@ public final class FundFileReader {
         try {
             List<String> fundNames = Files.readAllLines(file);
             return funds.stream()
-                    .filter(x -> fundNames.contains(x.getName()))
+                    .filter(x -> fundNames.contains(x.getDefinition().getName()))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
@@ -59,9 +59,9 @@ public final class FundFileReader {
         try {
             List<String> fundNames = Files.readAllLines(file);
             List<String> isins = fundNames.stream()
-                    .map(Fund::getIsin)
+                    .map(FundDefinition::getIsin)
                     .collect(Collectors.toList());
-            return downloader.download(isins);
+            return downloader.downloadByIsins(isins);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading file " + file.toFile().getAbsolutePath(), e);
         }
@@ -81,21 +81,21 @@ public final class FundFileReader {
 
                 TObjectDoubleMap<String> isins = new TObjectDoubleHashMap<>();
                 for (String[] line : lines) {
-                    String isin = Fund.getIsin(line[0]);
+                    String isin = FundDefinition.getIsin(line[0]);
                     double allocation = NumberUtils.parsePercentage(line[headerIndex]);
                     isins.put(isin, allocation);
                 }
 
                 List<Fund> funds;
                 if (downloadedFunds.isEmpty()) {
-                    funds = downloader.download(isins.keySet());
+                    funds = downloader.downloadByIsins(isins.keySet());
                     downloadedFunds.addAll(funds);
                 } else {
                     funds = downloadedFunds;
                 }
 
                 for (Fund fund : funds) {
-                    double allocation = isins.get(fund.getIsin());
+                    double allocation = isins.get(fund.getDefinition().getIsin());
                     if (allocation > 0.0)
                         portfolio.put(fund, allocation);
                 }

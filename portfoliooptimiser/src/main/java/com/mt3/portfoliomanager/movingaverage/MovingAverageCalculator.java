@@ -28,6 +28,6 @@ public final class MovingAverageCalculator {
 
     public Fund calculateAsFund(Fund fund, double frequency) {
         double[] averages = calculate(fund, frequency);
-        return new Fund(fund.getName(), new TDoubleArrayList(averages), false);
+        return new Fund(fund.getDefinition(), new TDoubleArrayList(averages), false);
     }
 }

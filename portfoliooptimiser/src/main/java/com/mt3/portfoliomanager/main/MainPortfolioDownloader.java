@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
-public final class MainDownloader {
+public final class MainPortfolioDownloader {
 
     private static final Logger LOG = Logger.getLogger(MainClusterer.class);
 
