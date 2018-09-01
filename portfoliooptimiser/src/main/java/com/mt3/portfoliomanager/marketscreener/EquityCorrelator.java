@@ -16,29 +16,22 @@ public final class EquityCorrelator {
     private static final int DATE_MARGIN = 3;
 
     public double calculateCorrelation(Equity equity, int preDays, int postDays) {
-        LOG.info("Calculating correlation for " + equity.getName());
+        //LOG.info("Calculating correlation for " + equity.getName());
 
         TDoubleList estimateJumps = new TDoubleArrayList();
         TDoubleList actualJumps = new TDoubleArrayList();
 
         Set<LocalDate> estimateDates = new TreeSet<>(equity.getEstimatedPrices().keySet());
         for (LocalDate estimateDateStart : estimateDates) {
-            LocalDate estimateDateEnd = findNearestDate(estimateDateStart.plusDays(preDays), equity.getEstimatedPrices().keySet());
-            if (estimateDateEnd == null)
+            DateAndPriceJump estimateJump = equity.calculateJump(estimateDateStart, preDays, equity.getEstimatedPrices());
+            if (estimateJump == null)
+                continue;
+            DateAndPriceJump actualJump = equity.calculateJump(estimateJump.getEndDate(), postDays, equity.getActualPrices());
+            if (actualJump == null)
                 continue;
 
-            LocalDate actualDateStart = findNearestDate(estimateDateStart.plusDays(preDays), equity.getActualPrices().keySet());
-            if (actualDateStart == null)
-                continue;
-
-            LocalDate actualDateEnd = findNearestDate(actualDateStart.plusDays(postDays), equity.getActualPrices().keySet());
-            if (actualDateEnd == null)
-                continue;
-
-            double estimateJump = equity.getEstimatedPrices().get(estimateDateEnd) - equity.getEstimatedPrices().get(estimateDateStart);
-            estimateJumps.add(estimateJump);
-            double actualJump = equity.getEstimatedPrices().get(actualDateEnd) - equity.getEstimatedPrices().get(actualDateStart);
-            actualJumps.add(actualJump);
+            estimateJumps.add(estimateJump.getPriceJump());
+            actualJumps.add(actualJump.getPriceJump());
         }
 
         if (estimateJumps.size() <= 2)

@@ -17,7 +17,7 @@ public final class MainPortfolioDownloader {
     private static final Logger LOG = Logger.getLogger(MainClusterer.class);
 
     public static void main(String[] args) throws FileNotFoundException {
-        LocalDate startDate = LocalDate.of(2018, 8, 11);
+        LocalDate startDate = LocalDate.of(2018, 8, 31);
         LocalDate endDate = LocalDate.now().minusDays(1);
 
         MorningstarDownloader downloader = new MorningstarDownloader();
@@ -29,8 +29,8 @@ public final class MainPortfolioDownloader {
                 .mapToDouble(Fund::getTotalReturn)
                 .average().getAsDouble();
 
-        System.out.println(NumberUtils.getAsPercenage(portfolioChain.getTotalReturn(endDate)));
-        System.out.println(NumberUtils.getAsPercenage(benchmarkTotalReturn));
+        System.out.println("My Fund," + NumberUtils.getAsPercenage(portfolioChain.getTotalReturn(endDate)));
+        System.out.println("Benchmark," + NumberUtils.getAsPercenage(benchmarkTotalReturn));
         // TODO: calculate current allocation (i.e. considering how each fund has returned)
     }
 }

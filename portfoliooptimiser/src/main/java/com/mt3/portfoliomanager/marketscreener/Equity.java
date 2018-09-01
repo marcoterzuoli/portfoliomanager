@@ -4,8 +4,11 @@ import gnu.trove.impl.unmodifiable.TUnmodifiableObjectDoubleMap;
 import gnu.trove.map.TObjectDoubleMap;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public final class Equity {
+
+    private static final int DATE_MARGIN = 10;
 
     private final String name;
     private final TObjectDoubleMap<LocalDate> actualPrices;
@@ -14,7 +17,7 @@ public final class Equity {
     public Equity(String name, TObjectDoubleMap<LocalDate> actualPrices, TObjectDoubleMap<LocalDate> estimatedPrices) {
         this.name = name;
         this.actualPrices = new TUnmodifiableObjectDoubleMap<>(actualPrices);
-        this.estimatedPrices = new TUnmodifiableObjectDoubleMap(estimatedPrices);
+        this.estimatedPrices = new TUnmodifiableObjectDoubleMap<>(estimatedPrices);
     }
 
     public String getName() {
@@ -27,5 +30,30 @@ public final class Equity {
 
     public TObjectDoubleMap<LocalDate> getEstimatedPrices() {
         return estimatedPrices;
+    }
+
+    public DateAndPriceJump calculateJump(LocalDate tentativeDateStart, int daysDiff, TObjectDoubleMap<LocalDate> dateToPriceMap) {
+        LocalDate startDate = findNearestDate(tentativeDateStart, dateToPriceMap.keySet());
+        if (startDate == null)
+            return null;
+
+        LocalDate endDate = findNearestDate(startDate.plusDays(daysDiff), dateToPriceMap.keySet());
+        if (endDate == null)
+            return null;
+
+        double priceJump = dateToPriceMap.get(endDate) / dateToPriceMap.get(startDate);
+        return new DateAndPriceJump(this, startDate, endDate, priceJump);
+    }
+
+    private LocalDate findNearestDate(LocalDate date, Set<LocalDate> searchDates) {
+        for (int i = 0; i <= DATE_MARGIN; i++) {
+            LocalDate targetDatePlus = date.plusDays(i);
+            if (searchDates.contains(targetDatePlus))
+                return targetDatePlus;
+            LocalDate targetDateMinus = date.minusDays(i);
+            if (searchDates.contains(targetDateMinus))
+                return targetDateMinus;
+        }
+        return null;
     }
 }

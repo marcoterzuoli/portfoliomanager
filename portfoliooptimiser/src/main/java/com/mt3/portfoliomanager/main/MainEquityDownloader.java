@@ -6,6 +6,7 @@ import com.mt3.portfoliomanager.marketscreener.Equity;
 import com.mt3.portfoliomanager.marketscreener.EquityCorrelator;
 import com.mt3.portfoliomanager.marketscreener.MarketScreenerInternals;
 
+import java.util.Arrays;
 import java.util.List;
 
 public final class MainEquityDownloader {
@@ -17,16 +18,20 @@ public final class MainEquityDownloader {
         MarketScreenerEquityDownloader equityDownloader = new MarketScreenerEquityDownloader();
         List<Equity> equities = equityDownloader.download(internals);
 
-        EquityCorrelator correlator = new EquityCorrelator();
-        double[] correlations = equities.stream()
-                .mapToDouble(x -> correlator.calculateCorrelation(x, 30, 10))
-                .filter(x -> !Double.isNaN(x))
-                .toArray();
-        double correlation = equities.stream()
-                .mapToDouble(x -> correlator.calculateCorrelation(x, 30, 10))
-                .filter(x -> !Double.isNaN(x))
-                .average()
-                .orElse(0.0);
-        System.out.println(correlation);
+        for (int preDays = 30; preDays <= 150; preDays += 30) {
+            for (int postDays = 5; postDays <= 150; postDays += 5) {
+                int finalPreDays = preDays;
+                int finalPostDays = postDays;
+                EquityCorrelator correlator = new EquityCorrelator();
+                double[] correlations = equities.stream()
+                        .mapToDouble(x -> correlator.calculateCorrelation(x, finalPreDays, finalPostDays))
+                        .filter(x -> !Double.isNaN(x))
+                        .toArray();
+                double correlation = Arrays.stream(correlations)
+                        .average()
+                        .orElse(0.0);
+                System.out.println(finalPreDays + "\t" + finalPostDays + "\t" + correlation);
+            }
+        }
     }
 }
