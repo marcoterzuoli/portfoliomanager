@@ -5,11 +5,13 @@ public final class MarketScreenerInternals {
     private final String internalId;
     private final String codeZb;
     private final String equityName;
+    private final String marketInternalId;
 
-    public MarketScreenerInternals(String internalId, String codeZb, String equityName) {
+    public MarketScreenerInternals(String internalId, String codeZb, String equityName, String marketInternalId) {
         this.internalId = internalId;
         this.codeZb = codeZb;
         this.equityName = equityName;
+        this.marketInternalId = marketInternalId;
     }
 
     public String getInternalId() {
@@ -22,5 +24,9 @@ public final class MarketScreenerInternals {
 
     public String getEquityName() {
         return equityName;
+    }
+
+    public String getMarketInternalId() {
+        return marketInternalId;
     }
 }

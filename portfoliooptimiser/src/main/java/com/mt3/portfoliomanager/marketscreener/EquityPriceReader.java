@@ -13,7 +13,7 @@ public final class EquityPriceReader {
     private static final LocalDate EPOCH_START = LocalDate.of(1970, 1, 1);
     private static final long DAY_DIVISOR = 24 * 60 * 60 * 1000;
 
-    public static Equity readFromString(String name, String content) {
+    public static Equity readFromString(MarketScreenerInternals marketScreenerInternals, String content) {
         char[] chars = content.toCharArray();
 
         List<TObjectDoubleMap<LocalDate>> maps = new ArrayList<>();
@@ -43,7 +43,7 @@ public final class EquityPriceReader {
                 builder.append(c);
             }
         }
-        return new Equity(name, maps.get(0), maps.get(1));
+        return new Equity(marketScreenerInternals, maps.get(0), maps.get(1));
     }
 
     private static LocalDate convertFromEpoch(long millisPastEpoch) {

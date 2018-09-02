@@ -21,7 +21,8 @@ public final class MarketScreenerMarketDownloader {
 
     private static final Pattern EQUITY_PATTERN = Pattern.compile("<a href=\\\"/([a-zA-Z0-9\\-]+)/\\\" +codezb=\\\"([0-9]+)\\\" at=\\\"1\\\">(.*)</a>");
 
-    private final Set<String> marketInternalNames = ImmutableSet.of("S-P-500-4985");
+    private final Set<String> marketInternalNames = ImmutableSet.of("S-P-500-4985", "NASDAQ-COMP-4944", "STOXX-EUROPE-600-7477",
+            "TOKYO-TOPIX-7451", "CHINA-SHANGHAI-COMP-7384");
 
     public List<MarketScreenerInternals> download() {
         return DownloadHelper.downloadInParallel(marketInternalNames, this::downloadEquityInternalIds, null);
@@ -45,7 +46,7 @@ public final class MarketScreenerMarketDownloader {
                 String internalName = matcher.group(1);
                 String code = matcher.group(2);
                 String name = matcher.group(3);
-                result.add(new MarketScreenerInternals(internalName, code, name));
+                result.add(new MarketScreenerInternals(internalName, code, name, marketInternalId));
             }
 
             if (!anyFound)

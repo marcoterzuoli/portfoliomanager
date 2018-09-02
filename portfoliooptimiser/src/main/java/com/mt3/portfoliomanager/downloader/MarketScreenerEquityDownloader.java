@@ -1,11 +1,15 @@
 package com.mt3.portfoliomanager.downloader;
 
 import com.google.common.collect.ImmutableList;
+import com.mt3.portfoliomanager.Constants;
 import com.mt3.portfoliomanager.marketscreener.Equity;
 import com.mt3.portfoliomanager.marketscreener.EquityPriceReader;
 import com.mt3.portfoliomanager.marketscreener.MarketScreenerInternals;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public final class MarketScreenerEquityDownloader {
@@ -25,6 +29,17 @@ public final class MarketScreenerEquityDownloader {
 
         String url = PRICES_URL_TEMPLATE.replace(CODE_ZB_TOKEN, internalInfo.getCodeZb());
         String document = DownloadHelper.downloadWithRetry(url);
-        return ImmutableList.of(EquityPriceReader.readFromString(internalInfo.getEquityName(), document));
+
+        // TODO: refactor out of here as processor?
+        Path folder = Constants.MARKET_SCREENER_DATA_FOLDER.resolve(internalInfo.getMarketInternalId());
+        try {
+            Files.createDirectories(folder);
+            Path file = folder.resolve(internalInfo.getInternalId() + ".txt");
+            Files.write(file, document.getBytes());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        return ImmutableList.of(EquityPriceReader.readFromString(internalInfo, document));
     }
 }

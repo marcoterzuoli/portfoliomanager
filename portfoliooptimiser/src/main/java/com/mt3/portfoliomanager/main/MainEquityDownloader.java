@@ -6,17 +6,20 @@ import com.mt3.portfoliomanager.marketscreener.Equity;
 import com.mt3.portfoliomanager.marketscreener.EquityCorrelator;
 import com.mt3.portfoliomanager.marketscreener.MarketScreenerInternals;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public final class MainEquityDownloader {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         MarketScreenerMarketDownloader marketDownloader = new MarketScreenerMarketDownloader();
         List<MarketScreenerInternals> internals = marketDownloader.download();
 
         MarketScreenerEquityDownloader equityDownloader = new MarketScreenerEquityDownloader();
         List<Equity> equities = equityDownloader.download(internals);
+
+        // TODO: saving equity files to disk should be here
 
         for (int preDays = 30; preDays <= 150; preDays += 30) {
             for (int postDays = 5; postDays <= 150; postDays += 5) {

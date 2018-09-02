@@ -28,7 +28,7 @@ public final class MainEquityChooser {
                 .sorted(Comparator.comparingDouble(x -> x.getPriceJump()))
                 .collect(Collectors.toList());
         for (int i = 0; i < 20; i++) {
-            System.out.println(sortedEquities.get(i).getEquity().getName());
+            System.out.println(sortedEquities.get(i).getEquity().getMarketScreenerInternals());
         }
     }
 }

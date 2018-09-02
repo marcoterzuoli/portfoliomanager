@@ -16,7 +16,7 @@ public final class EquityCorrelator {
     private static final int DATE_MARGIN = 3;
 
     public double calculateCorrelation(Equity equity, int preDays, int postDays) {
-        //LOG.info("Calculating correlation for " + equity.getName());
+        //LOG.info("Calculating correlation for " + equity.getMarketScreenerInternals());
 
         TDoubleList estimateJumps = new TDoubleArrayList();
         TDoubleList actualJumps = new TDoubleArrayList();

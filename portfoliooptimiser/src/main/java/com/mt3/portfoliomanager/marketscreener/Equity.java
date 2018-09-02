@@ -10,18 +10,18 @@ public final class Equity {
 
     private static final int DATE_MARGIN = 10;
 
-    private final String name;
+    private final MarketScreenerInternals marketScreenerInternals;
     private final TObjectDoubleMap<LocalDate> actualPrices;
     private final TObjectDoubleMap<LocalDate> estimatedPrices;
 
-    public Equity(String name, TObjectDoubleMap<LocalDate> actualPrices, TObjectDoubleMap<LocalDate> estimatedPrices) {
-        this.name = name;
+    public Equity(MarketScreenerInternals marketScreenerInternals, TObjectDoubleMap<LocalDate> actualPrices, TObjectDoubleMap<LocalDate> estimatedPrices) {
+        this.marketScreenerInternals = marketScreenerInternals;
         this.actualPrices = new TUnmodifiableObjectDoubleMap<>(actualPrices);
         this.estimatedPrices = new TUnmodifiableObjectDoubleMap<>(estimatedPrices);
     }
 
-    public String getName() {
-        return name;
+    public MarketScreenerInternals getMarketScreenerInternals() {
+        return marketScreenerInternals;
     }
 
     public TObjectDoubleMap<LocalDate> getActualPrices() {
