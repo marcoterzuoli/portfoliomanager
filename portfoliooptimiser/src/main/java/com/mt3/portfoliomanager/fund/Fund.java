@@ -123,7 +123,7 @@ public final class Fund {
         if (toIndex < 0)
             throw new IllegalArgumentException("To date " + toDate + " cannot be found");
         int n = prices.size();
-        return view(n - fromIndex, n - toIndex + 1); // +1 because toDate is included, but toIndex is not
+        return view(n - fromIndex, n - toIndex - 1); // -1 because toDate is included, but toIndex is not
     }
 
     public Fund view(int fromIndexAgo, int toIndexAgo) {

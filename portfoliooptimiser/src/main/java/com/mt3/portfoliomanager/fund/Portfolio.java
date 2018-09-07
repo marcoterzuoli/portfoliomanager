@@ -25,18 +25,20 @@ public final class Portfolio {
         return allocation;
     }
 
-    public double getTotalReturn(LocalDate endDate) {
-        return getReturn(Fund::getTotalReturn, endDate);
+    public double getTotalReturn(LocalDate startDate, LocalDate endDate) {
+        return getReturn(Fund::getTotalReturn, startDate, endDate);
     }
 
-    public double getAnnualisedReturn(LocalDate endDate) {
-        return getReturn(Fund::getAnnualisedReturn, endDate);
+    public double getAnnualisedReturn(LocalDate startDate, LocalDate endDate) {
+        return getReturn(Fund::getAnnualisedReturn, startDate, endDate);
     }
 
-    public double getReturn(Function<Fund, Double> returnFunc, LocalDate endDate) {
+    public double getReturn(Function<Fund, Double> returnFunc, LocalDate startDate, LocalDate endDate) {
+        LocalDate finalStartDate = startDate == null ? investmentDate : startDate;
+
         AtomicDouble totalReturn = new AtomicDouble();
         getAllocation().forEachEntry((fund, weight) -> {
-            double calculatedReturn = returnFunc.apply(fund.view(investmentDate, endDate));
+            double calculatedReturn = returnFunc.apply(fund.view(finalStartDate, endDate));
             totalReturn.addAndGet(calculatedReturn * weight);
             return true;
         });

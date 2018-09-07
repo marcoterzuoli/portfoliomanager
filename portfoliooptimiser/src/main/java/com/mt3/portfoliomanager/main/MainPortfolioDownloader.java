@@ -1,10 +1,10 @@
 package com.mt3.portfoliomanager.main;
 
-import com.mt3.portfoliomanager.utils.NumberUtils;
 import com.mt3.portfoliomanager.downloader.MorningstarDownloader;
 import com.mt3.portfoliomanager.fund.Fund;
 import com.mt3.portfoliomanager.fund.FundFileReader;
 import com.mt3.portfoliomanager.fund.PortfolioChain;
+import com.mt3.portfoliomanager.utils.NumberUtils;
 import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;
@@ -17,20 +17,26 @@ public final class MainPortfolioDownloader {
     private static final Logger LOG = Logger.getLogger(MainClusterer.class);
 
     public static void main(String[] args) throws FileNotFoundException {
-        LocalDate startDate = LocalDate.of(2018, 8, 31);
+        LocalDate globalStartDate = LocalDate.of(2018, 8, 11);
+        LocalDate monthStartDate = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        LocalDate[] startDates = new LocalDate[] { globalStartDate, monthStartDate };
+        //LocalDate[] startDates = new LocalDate[] { monthStartDate };
         LocalDate endDate = LocalDate.now().minusDays(1);
 
         MorningstarDownloader downloader = new MorningstarDownloader();
         PortfolioChain portfolioChain = FundFileReader.readPortfolioAllocationFromFile(Paths.get(args[0]), downloader);
-
         List<Fund> benchmarkFunds = FundFileReader.readPortfolioFromFile(Paths.get(args[1]), downloader);
-        double benchmarkTotalReturn = benchmarkFunds.stream()
-                .map(x -> x.view(startDate, endDate))
-                .mapToDouble(Fund::getTotalReturn)
-                .average().getAsDouble();
 
-        System.out.println("My Fund," + NumberUtils.getAsPercenage(portfolioChain.getTotalReturn(endDate)));
-        System.out.println("Benchmark," + NumberUtils.getAsPercenage(benchmarkTotalReturn));
-        // TODO: calculate current allocation (i.e. considering how each fund has returned)
+        for (LocalDate startDate : startDates) {
+            double benchmarkTotalReturn = benchmarkFunds.stream()
+                    .map(x -> x.view(startDate, endDate))
+                    .mapToDouble(Fund::getTotalReturn)
+                    .average().getAsDouble();
+
+            LOG.info("From close of " + startDate + " to close of " + endDate);
+            LOG.info("My Fund," + NumberUtils.getAsPercenage(portfolioChain.getTotalReturn(startDate, endDate)));
+            LOG.info("Benchmark," + NumberUtils.getAsPercenage(benchmarkTotalReturn));
+            // TODO: calculate current allocation (i.e. considering how each fund has returned)
+        }
     }
 }

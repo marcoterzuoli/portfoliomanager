@@ -18,17 +18,17 @@ public final class PortfolioChain {
         return portfolios;
     }
 
-    public double getTotalReturn(LocalDate endDate) {
-        return getReturn(Fund::getTotalReturn, endDate);
+    public double getTotalReturn(LocalDate startDate, LocalDate endDate) {
+        return getReturn(Fund::getTotalReturn, startDate, endDate);
     }
 
-    public double getAnnualisedReturn(LocalDate endDate) {
-        return getReturn(Fund::getAnnualisedReturn, endDate);
+    public double getAnnualisedReturn(LocalDate startDate, LocalDate endDate) {
+        return getReturn(Fund::getAnnualisedReturn, startDate, endDate);
     }
 
-    public double getReturn(Function<Fund, Double> returnFunc, LocalDate endDate) {
+    public double getReturn(Function<Fund, Double> returnFunc, LocalDate startDate, LocalDate endDate) {
         return portfolios.stream()
-                .mapToDouble(x -> x.getReturn(returnFunc, endDate))
+                .mapToDouble(x -> x.getReturn(returnFunc, startDate, endDate))
                 .average()
                 .orElseThrow(() -> new IllegalArgumentException("Avegate cannot be calculated"));
     }
