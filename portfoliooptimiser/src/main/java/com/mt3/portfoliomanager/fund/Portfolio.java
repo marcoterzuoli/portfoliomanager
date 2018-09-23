@@ -14,7 +14,7 @@ public final class Portfolio {
 
     public Portfolio(LocalDate investmentDate, TObjectDoubleMap<Fund> allocation) {
         this.investmentDate = investmentDate;
-        this.allocation = new TUnmodifiableObjectDoubleMap<Fund>(allocation);
+        this.allocation = new TUnmodifiableObjectDoubleMap<>(allocation);
     }
 
     public LocalDate getInvestmentDate() {
