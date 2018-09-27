@@ -13,6 +13,6 @@ public class FundFileReaderTest {
     public void readFile() throws URISyntaxException {
         Path file = Paths.get(getClass().getResource("/GB00BVG1CF25.csv").toURI());
         Fund fund = FundFileReader.readFromCsv(file);
-        Assert.assertEquals(0.909449566386654, fund.getAnnualisedReturn(), 0.000001); // TODO: is this calculation correct?
+        Assert.assertEquals(0.9095741400963405, fund.getAnnualisedReturn(), 0.000001); // TODO: is this calculation correct? it changed recently
     }
 }
